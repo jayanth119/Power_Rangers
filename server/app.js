@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const authRoutes = require('./routes/auth');
 const bloodRequestRoutes = require('./routes/blood-request');
 const notificationRoutes = require('./routes/notification');
+const bloodBankRoutes = require('./routes/bloodbank');
 const userRoutes = require('./routes/user');
 const errorHandler = require('./middlewares/error');
 
@@ -20,7 +21,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/blood-request', bloodRequestRoutes);
 app.use('/api/v1/notification', notificationRoutes);
 app.use('/api/v1/user', userRoutes);
-
+app.use('/api/v1/bloodbank', bloodBankRoutes);
 // Error Handler
 app.use(errorHandler);
 
