@@ -13,6 +13,11 @@ import motor.motor_asyncio
 import random
 import httpx
 from pathlib import Path
+import os
+import smtplib
+from email.message import EmailMessage
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, EmailStr
 # add middlewares
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -54,6 +59,10 @@ class DonationAppointment(BaseModel):
     blood_group: str
 
 def find_blood_banks_by_group(blood_group: str):
+    # Convert positive blood groups to negative
+    if "+" in blood_group:
+        blood_group = blood_group.replace("+", "-")
+    
     matching_banks = [
         bank for bank in blood_bank_data
         if blood_group in bank["available_blood_groups"] and bank["available_blood_groups"][blood_group] > 0
@@ -100,6 +109,8 @@ def schedule_donation_appointment(donor_name: str, donor_location: List[float], 
         "appointment_time": appointment_time.strftime('%Y-%m-%d %H:%M')
     }
 
+class BloodRequest(BaseModel):
+    blood_group: str
 @app.get("/find_blood_banks")
 def get_blood_banks(blood_group: str):
     """
@@ -413,6 +424,44 @@ async def store_blood_banks():
         return {"message": "Records inserted successfully", "count": inserted_count}
     else:
         raise HTTPException(status_code=404, detail="No records found")
+
+#  api to send email required for blood donation
+
+# Pydantic model for the email request payload
+class EmailRequest(BaseModel):
+    recipient: EmailStr
+    subject: str
+    body: str
+
+# Load email credentials from environment variables
+SMTP_SERVER = "smtp.gmail.com"  # Adjust if using a different SMTP server
+SMTP_PORT = 465  # For SMTP_SSL
+EMAIL_USER = "manojtadikonda5@gmail.com"  # e.g., your email address
+EMAIL_PASSWORD = "aruv kqbu kfew jlpp"  # your email password or app-specific password
+
+@app.post("/send-email")
+async def send_email(email_req: EmailRequest):
+    if not EMAIL_USER or not EMAIL_PASSWORD:
+        raise HTTPException(status_code=500, detail="Email credentials not configured.")
+
+    # Create the email message
+    msg = EmailMessage()
+    msg["Subject"] = email_req.subject
+    msg["From"] = EMAIL_USER
+    msg["To"] = email_req.recipient
+    msg.set_content(email_req.body)
+
+    try:
+        # Establish a secure session with the SMTP server and send email
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
+            smtp.login(EMAIL_USER, EMAIL_PASSWORD)
+            smtp.send_message(msg)
+        return {"message": "Email sent successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send email: {e}")
+
+
+
 
 
 if __name__ == "__main__":

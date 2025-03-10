@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AskBloodScreen extends StatefulWidget {
   const AskBloodScreen({Key? key}) : super(key: key);
@@ -12,11 +15,41 @@ class _AskBloodScreenState extends State<AskBloodScreen> {
   final TextEditingController _patientNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _bloodGroupController = TextEditingController();
-  final TextEditingController _hospitalLocationController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
-  final TextEditingController _unitsRequiredController = TextEditingController();
+  final TextEditingController _hospitalLocationController =
+      TextEditingController();
+  final TextEditingController _contactNumberController =
+      TextEditingController();
+  final TextEditingController _unitsRequiredController =
+      TextEditingController();
   final TextEditingController _timeUntilController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  Future<void> _sendSMS(String bloodgroup ) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/send-email'),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "recipient": "chjayanth119@gmail.com",
+          "subject": "Blood required in your Area ",
+          "body": "Hey User urgent need of $bloodgroup  need . if you want help please contact "
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('SMS sent successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to send SMS')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sending SMS: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,13 +222,17 @@ class _AskBloodScreenState extends State<AskBloodScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // Handle form submission
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Processing Data')),
                     );
                   }
+                String _blood = _bloodGroupController.text; 
+                 await  _sendSMS(_blood); 
+                  // api integrations to send email url "http://127.0.0.1:8000/send-email"
+                  // api integrations to send sms url "http://127.0.0.1:8000/send-sms"
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
