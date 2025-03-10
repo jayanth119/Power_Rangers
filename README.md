@@ -100,16 +100,27 @@ We welcome contributions! Please fork the repository and create a pull request w
 
 ---
 
-## Screenshots of Our App
+# Blood Bank App  
 
-![Login Screen](assets/1.png)
-![Home Screen](assets/2.png)
-![Blood Bank Details Screen](assets/3.png)
-![Blood Availability Screen](assets/4.png)
-![Request Blood Screen](assets/5.png)
-![Blood Donation Screen](assets/6.png)
-![Appointment Schedule Screen](assets/7.png)
-![Confirm Appointment Schedule Screen](assets/8.png)
+## Screenshots  
+
+<table>  
+  <tr>  
+    <td><img src="assets/1.png" alt="Login Screen" width="200"/></td>  
+    <td><img src="assets/2.png" alt="Home Screen" width="200"/></td>  
+    <td><img src="assets/3.png" alt="Blood Bank Details Screen" width="200"/></td>  
+  </tr>  
+  <tr>  
+    <td><img src="assets/4.png" alt="Blood Availability Screen" width="200"/></td>  
+    <td><img src="assets/5.png" alt="Request Blood Screen" width="200"/></td>  
+    <td><img src="assets/6.png" alt="Blood Donation Screen" width="200"/></td>  
+  </tr>  
+  <tr>  
+    <td><img src="assets/7.png" alt="Appointment Schedule Screen" width="200"/></td>  
+    <td><img src="assets/8.png" alt="Confirm Appointment Schedule Screen" width="200"/></td>  
+  </tr>  
+</table>  
+
 
 ---
 
