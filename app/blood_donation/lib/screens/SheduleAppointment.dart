@@ -1,6 +1,9 @@
+import 'package:blood_donation/screens/HomeScreen.dart';
+import 'package:blood_donation/screens/bottomNavabar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppointmentScheduleScreen extends StatefulWidget {
   const AppointmentScheduleScreen({Key? key}) : super(key: key);
@@ -18,8 +21,23 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
   // Controllers for user input
   final TextEditingController _donorNameController = TextEditingController();
   final TextEditingController _bloodGroupController = TextEditingController();
-  final TextEditingController _latitudeController = TextEditingController();
-  final TextEditingController _longitudeController = TextEditingController();
+
+  double? _latitude;
+  double? _longitude;
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocationFromSharedPreferences();
+  }
+
+  Future<void> _getLocationFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _latitude = prefs.getDouble('latitude') ?? 0.0;
+      _longitude = prefs.getDouble('longitude') ?? 0.0;
+    });
+  }
 
   Future<void> _scheduleAppointment() async {
     setState(() {
@@ -29,9 +47,7 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
 
     // Validate input fields
     if (_donorNameController.text.isEmpty ||
-        _bloodGroupController.text.isEmpty ||
-        _latitudeController.text.isEmpty ||
-        _longitudeController.text.isEmpty) {
+        _bloodGroupController.text.isEmpty ) {
       setState(() {
         _error = "Please fill all fields.";
         _isLoading = false;
@@ -42,15 +58,12 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
     final Map<String, dynamic> requestData = {
       "donor_name": _donorNameController.text,
       "blood_group": _bloodGroupController.text,
-      "donor_location": [
-        double.tryParse(_latitudeController.text) ?? 0.0,
-        double.tryParse(_longitudeController.text) ?? 0.0
-      ],
+      "donor_location": [_latitude, _longitude],
     };
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/schedule_appointment'),
+        Uri.parse('http://127.0.0.1:8000/schedule_appointment'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestData),
       );
@@ -75,11 +88,11 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Donation'),
-        backgroundColor: Color(0xFFE53935),
+        title: const Text('Blood Donation'),
+        backgroundColor: const Color(0xFFE53935),
       ),
       body: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         color: Colors.white,
         child: _isLoading
             ? _buildLoadingView()
@@ -98,23 +111,30 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
         children: [
           _buildTextField(_donorNameController, "Donor Name"),
           _buildTextField(_bloodGroupController, "Blood Group"),
-          _buildTextField(_latitudeController, "Latitude", keyboardType: TextInputType.number),
-          _buildTextField(_longitudeController, "Longitude", keyboardType: TextInputType.number),
-          SizedBox(height: 20),
+          Text(
+            'Latitude: ${_latitude ?? 'Fetching...'}',
+            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+          ),
+          Text(
+            'Longitude: ${_longitude ?? 'Fetching...'}',
+            style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+          ),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _scheduleAppointment,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFE53935),
+              backgroundColor: const Color(0xFFE53935),
               foregroundColor: Colors.white,
             ),
-            child: Text('Schedule Appointment'),
+            child: const Text('Schedule Appointment'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(TextEditingController controller, String label,
+      {TextInputType keyboardType = TextInputType.text}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -122,7 +142,7 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
         keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
@@ -133,11 +153,11 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             color: Color(0xFFE53935),
           ),
-          SizedBox(height: 16),
-          Text('Scheduling appointment...'),
+          const SizedBox(height: 16),
+          const Text('Scheduling appointment...'),
         ],
       ),
     );
@@ -150,25 +170,25 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               color: Color(0xFFE53935),
               size: 48,
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Appointment Failed',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               _error ?? 'Unknown error',
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -176,10 +196,10 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFE53935),
+                backgroundColor: const Color(0xFFE53935),
                 foregroundColor: Colors.white,
               ),
-              child: Text('Try Again'),
+              child: const Text('Try Again'),
             ),
           ],
         ),
@@ -198,13 +218,13 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.check_circle,
                   color: Colors.green,
                   size: 48,
                 ),
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                const Text(
                   'Appointment Scheduled!',
                   style: TextStyle(
                     fontSize: 18,
@@ -212,20 +232,25 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
                     color: Color(0xFFB71C1C),
                   ),
                 ),
-                SizedBox(height: 24),
                 _buildInfoItem('Donor', _response?['donor'] ?? ''),
                 _buildInfoItem('Blood Group', _response?['blood_group'] ?? ''),
                 _buildInfoItem('Blood Bank', _response?['blood_bank'] ?? ''),
                 _buildInfoItem('Location', _response?['location'] ?? ''),
-                _buildInfoItem('Appointment', _response?['appointment_time'] ?? ''),
-                SizedBox(height: 24),
+                _buildInfoItem(
+                    'Appointment', _response?['appointment_time'] ?? ''),
+                const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BottomNavBar()),
+                    ),
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFE53935),
+                    backgroundColor: const Color(0xFFE53935),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text('Done'),
+                  child: const Text('Done'),
                 ),
               ],
             ),
@@ -242,14 +267,14 @@ class _AppointmentScheduleScreenState extends State<AppointmentScheduleScreen> {
         children: [
           Text(
             '$label: ',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black87,
               ),
             ),

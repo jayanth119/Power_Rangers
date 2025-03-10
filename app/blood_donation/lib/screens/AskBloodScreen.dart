@@ -31,7 +31,7 @@ class _AskBloodScreenState extends State<AskBloodScreen> {
         body: json.encode({
           "recipient": "chjayanth119@gmail.com",
           "subject": "Blood required in your Area ",
-          "body": "Hey User urgent need of $bloodgroup  need . if you want help please contact "
+          "body": "Hey User urgent need of $bloodgroup  group . if you want help please contact "
         }),
       );
 

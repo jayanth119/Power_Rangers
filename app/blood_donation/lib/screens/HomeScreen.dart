@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:blood_donation/screens/BloodBankDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,11 +12,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _currentLocation = "Fetching location...";
+  List<Map<String, dynamic>> bloodBanks = [];
+  bool isLoading = true;
+  String errorMessage = '';
 
   @override
   void initState() {
     super.initState();
+    _loadStoredLocation();
     _getCurrentLocation();
+    _fetchBloodBanks();
+  }
+
+  Future<void> _loadStoredLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double? latitude = prefs.getDouble('latitude');
+    double? longitude = prefs.getDouble('longitude');
+
+    if (latitude != null && longitude != null) {
+      setState(() {
+        _currentLocation = "Lat: $latitude, Lng: $longitude";
+      });
+    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -48,31 +68,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('latitude', position.latitude);
+    await prefs.setDouble('longitude', position.longitude);
+
     setState(() {
-      _currentLocation = "Lat: ${position.latitude}, Lng: ${position.longitude}";
+      _currentLocation =
+          "Lat: ${position.latitude}, Lng: ${position.longitude}";
     });
   }
 
-  final List<Map<String, dynamic>> bloodBanks = [
-    {
-      "name": "G.B. Pant Hospital Blood bank",
-      "pincode": "744104",
-      "district": "SOUTH ANDAMAN",
-      "state": "Andaman And Nicobar Islands",
-      "latitude": 11.675442,
-      "longitude": 92.747338,
-      "available_blood_groups": {
-        "A+": 23,
-        "A-": 6,
-        "B+": 77,
-        "B-": 19,
-        "O+": 73,
-        "O-": 18,
-        "AB+": 70,
-        "AB-": 17,
-      },
-    },
-  ];
+  Future<void> _fetchBloodBanks() async {
+    final String apiUrl = 'http://127.0.0.1:8000/get_bloodbanks';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        setState(() {
+          bloodBanks = data.cast<Map<String, dynamic>>();
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Failed to load blood banks';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to connect to the server';
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Location and welcome banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -113,41 +145,63 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
+
+            // Blood Banks List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: bloodBanks.length,
-                itemBuilder: (context, index) {
-                  final bloodBank = bloodBanks[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to the details screen and pass the blood bank data
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BloodBankDetailsScreen(
-                            bloodBankDetails: bloodBank,
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : errorMessage.isNotEmpty
+                      ? Center(
+                          child: Text(
+                            errorMessage,
+                            style: TextStyle(color: Colors.red),
                           ),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      elevation: 3,
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      child: ListTile(
-                        leading: Icon(Icons.local_hospital, color: Colors.redAccent),
-                        title: Text(bloodBank['name']),
-                        subtitle: Text(
-                          'State: ${bloodBank['state']}\n'
-                          'Pincode: ${bloodBank['pincode']}',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        )
+                      : bloodBanks.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No blood banks available.",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: bloodBanks.length > 5
+                                  ? 5
+                                  : bloodBanks.length,
+                              itemBuilder: (context, index) {
+                                final bloodBank = bloodBanks[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BloodBankDetailsScreen(
+                                          bloodBankDetails: bloodBank,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 3,
+                                    margin:
+                                        EdgeInsets.symmetric(vertical: 10),
+                                    child: ListTile(
+                                      leading: Icon(Icons.local_hospital,
+                                          color: Colors.redAccent),
+                                      title: Text(bloodBank['name']),
+                                      subtitle: Text(
+                                        'State: ${bloodBank['state']}\n'
+                                        'Pincode: ${bloodBank['pincode']}',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
             ),
           ],
         ),
