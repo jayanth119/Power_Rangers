@@ -92,27 +92,25 @@ app
 
 We welcome contributions! Please fork the repository and create a pull request with your changes.
 
-
-
 ## Acknowledgments
 
 - Thanks to all the contributors and the open-source community for their invaluable support.
 - Special thanks to Google Cloud Platform for providing the necessary tools and services.
+- We also utilized the API for blood bank locations from [data.gov.in](https://api.data.gov.in/resource/fced6df9-a360-4e08-8ca0-f283fc74ce15?api-key=579b464db66ec23bdd000001603eb0cc38324dd768735197a75609f5&format=json&limit=2823).
+
+---
+
+## Screenshots of Our App
+
+![Login Screen](assets/1.png)
+![Home Screen](assets/2.png)
+![Blood Bank Details Screen](assets/3.png)
+![Blood Availability Screen](assets/4.png)
+![Request Blood Screen](assets/5.png)
+![Blood Donation Screen](assets/6.png)
+![Appointment Schedule Screen](assets/7.png)
+![Confirm Appointment Schedule Screen](assets/8.png)
 
 ---
 
 We hope this project impresses the judges and contributes to saving lives through efficient blood donation management. Thank you for your time and consideration!
-
-
-SCREENSHOTS OF OUR APP:
-
-<!-- display screenshots in assests  -->
-![ Login  Screen](assets/1.png)
-![ Home  Screen](assets/2.png)
-![Blood Bank Details   Screen](assets/3.png)
-![ Blood Availability  Screen](assets/4.png)
-![ Request Blood  Screen](assets/5.png)
-![ Blood Donation  Screen](assets/6.png)
-![ Appoinment Schedule Screen](assets/7.png)
-![ Conform Appoinment Schedule Screen](assets/8.png)
-
