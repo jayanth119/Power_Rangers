@@ -106,3 +106,13 @@ We hope this project impresses the judges and contributes to saving lives throug
 
 SCREENSHOTS OF OUR APP:
 
+<!-- display screenshots in assests  -->
+![ Login  Screen](assets/1.png)
+![ Home  Screen](assets/2.png)
+![Blood Bank Details   Screen](assets/3.png)
+![ Blood Availability  Screen](assets/4.png)
+![ Request Blood  Screen](assets/5.png)
+![ Blood Donation  Screen](assets/6.png)
+![ Appoinment Schedule Screen](assets/7.png)
+![ Conform Appoinment Schedule Screen](assets/8.png)
+
