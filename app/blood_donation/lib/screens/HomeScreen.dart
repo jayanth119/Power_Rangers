@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top),
                   Text(
-                    'Welcome, Jayanth',
+                    'Welcome',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
