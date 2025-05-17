@@ -1,127 +1,173 @@
-# AI-Driven Blood Donation Network
 
-Welcome to the AI-Driven Blood Donation Network project! This innovative solution aims to revolutionize the way blood donation and availability are managed by leveraging cutting-edge AI technologies. Our platform provides real-time blood availability tracking, AI-driven donor matching, smart notifications, and blood demand forecasting to ensure that blood banks and donors are seamlessly connected.
+# 🩸 AI-Driven Blood Donation Network
 
-## Features
-
-1. **Real-time Blood Availability Tracking**: Monitor blood stock levels across various blood banks and donors in real-time.
-2. **AI-Driven Matching**: Utilize Vertex AI and FAISS indexing to match donors with blood banks efficiently.
-3. **Smart Donor Notifications**: Send timely alerts to donors when their blood type is in demand.
-4. **Blood Demand Forecasting**: Predict future blood shortages using advanced AI models.
-
-## Tech Stack
-
-- **Frontend**: Flutter
-- **Backend**: FastAPI
-- **Database**: Firebase
-- **Data Processing**: Pandas
-- **AI/ML**: LangChain + Gemini, Vertex AI, FAISS
-- **Maps**: Google Maps
-
-## Project Structure
-
-```
-agents
-    ___pycache__
-    chroma_db
-    .gitignore
-    agents.py
-    app.py
-    bloodbank.json
-    converted_bloodbank.json
-    requirements.txt
-    test.bloodbanks.json
-app
-    blood_donation
-        android
-        ios
-        lib
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.7+
-- Flutter SDK
-- Firebase account
-- Google Cloud Platform account for Vertex AI
-
-### Installation
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/jayanth119/Power_Rangers.git
-   cd Power_Rangers
-   ```
-
-2. **Set up the backend**:
-   ```bash
-   cd agents
-   pip install -r requirements.txt
-   uvicorn app:app --reload
-   ```
-
-3. **Set up the Flutter app**:
-   ```bash
-   cd app/blood_donation
-   flutter pub get
-   flutter run
-   ```
-
-### Running the Project
-
-1. **Start the backend server**:
-   ```bash
-   cd agents
-   uvicorn app:app --reload
-   ```
-
-2. **Run the Flutter app**:
-   ```bash
-   cd app/blood_donation
-   flutter run
-   ```
-
-## Usage
-
-- **Blood Donor**: Track real-time blood availability, receive shortage alerts, and schedule appointments.
-- **Agent**: Manage user data, blood availability locations, and appointment schedules.
-
-## Contributing
-
-We welcome contributions! Please fork the repository and create a pull request with your changes.
-
-## Acknowledgments
-
-- Thanks to all the contributors and the open-source community for their invaluable support.
-- Special thanks to Google Cloud Platform for providing the necessary tools and services.
-- We also utilized the API for blood bank locations from [data.gov.in](https://api.data.gov.in/resource/fced6df9-a360-4e08-8ca0-f283fc74ce15?api-key=579b464db66ec23bdd000001603eb0cc38324dd768735197a75609f5&format=json&limit=2823).
+Welcome to the **AI-Driven Blood Donation Network** — a powerful, life-saving platform using **AI and real-time data** to revolutionize blood donation systems. Built with a modern tech stack, this project ensures timely and efficient blood availability tracking, donor matching, and demand forecasting.
 
 ---
 
-# Blood Bank App  
+## 🚀 Key Features
 
-## Screenshots  
+* 🔍 **Real-Time Blood Availability Tracking**: View blood stock across blood banks live.
+* 🧠 **AI-Driven Matching**: Efficiently match donors and banks using **Vertex AI** + **FAISS** indexing.
+* 🔔 **Smart Notifications**: Alert registered donors when their blood type is urgently needed.
+* 📈 **Blood Demand Forecasting**: Predict future shortages using AI/ML models.
+* 📍 **Location-Aware Recommendations**: Find nearby banks using **Google Maps** integration.
+
+---
+
+## 🧰 Tech Stack
+
+| Layer          | Technology                          |
+| -------------- | ----------------------------------- |
+| **Frontend**   | Flutter                             |
+| **Backend**    | FastAPI                             |
+| **Database**   | Firebase                            |
+| **AI/ML**      | Vertex AI, LangChain, Gemini, FAISS |
+| **Data Tools** | Pandas                              |
+| **Maps**       | Google Maps API                     |
+
+---
+
+## 🧱 Project Structure
+
+```
+Power_Rangers/
+│
+├── agents/                  # Backend AI engine
+│   ├── app.py               # FastAPI app
+│   ├── agents.py            # AI/FAISS logic
+│   ├── bloodbank.json       # Raw data
+│   ├── converted_bloodbank.json # Processed data
+│   ├── requirements.txt
+│
+└── app/blood_donation/      # Flutter frontend
+    ├── android/
+    ├── ios/
+    └── lib/
+```
+
+---
+
+## 🧪 Mermaid Diagram (System Architecture)
+
+```mermaid
+graph TD
+    A[Flutter App] -->|Requests| B[FastAPI Backend]
+    B --> C[Firebase DB]
+    B --> D[FAISS Indexing]
+    B --> E[Vertex AI / Gemini]
+    B --> F[Google Maps API]
+    C -->|Availability Data| A
+    D -->|Donor Matching| B
+    E -->|Forecasting & Matching| B
+    F -->|Nearby Blood Banks| A
+```
+
+---
+
+## ⚙️ Getting Started
+
+### 🔧 Prerequisites
+
+* Python 3.7+
+* Flutter SDK
+* Firebase Account
+* GCP Account (for Vertex AI & Maps)
+
+---
+
+### 🖥 Backend Setup
+
+```bash
+cd Power_Rangers/agents
+pip install -r requirements.txt
+uvicorn app:app --reload
+```
+
+### 📱 Frontend Setup
+
+```bash
+cd Power_Rangers/app/blood_donation
+flutter pub get
+flutter run
+```
+
+---
+
+## 💻 Usage
+
+👤 **Donor**
+
+* Track real-time availability
+* Get alerts when needed
+* Book donation appointments
+
+🏥 **Agent / Admin**
+
+* Manage availability data
+* Confirm appointments
+* Analyze demand trends
+
+---
+
+## 📸 Screenshots
 
 <table>  
   <tr>  
-    <td><img src="assets/1.png" alt="Login Screen" width="200"/></td>  
-    <td><img src="assets/2.png" alt="Home Screen" width="200"/></td>  
-    <td><img src="assets/3.png" alt="Blood Bank Details Screen" width="200"/></td>  
+    <td><img src="assets/1.png" width="200"/></td>  
+    <td><img src="assets/2.png" width="200"/></td>  
+    <td><img src="assets/3.png" width="200"/></td>  
   </tr>  
   <tr>  
-    <td><img src="assets/4.png" alt="Blood Availability Screen" width="200"/></td>  
-    <td><img src="assets/5.png" alt="Request Blood Screen" width="200"/></td>  
-    <td><img src="assets/6.png" alt="Blood Donation Screen" width="200"/></td>  
+    <td><img src="assets/4.png" width="200"/></td>  
+    <td><img src="assets/5.png" width="200"/></td>  
+    <td><img src="assets/6.png" width="200"/></td>  
   </tr>  
   <tr>  
-    <td><img src="assets/7.png" alt="Appointment Schedule Screen" width="200"/></td>  
-    <td><img src="assets/8.png" alt="Confirm Appointment Schedule Screen" width="200"/></td>  
+    <td><img src="assets/7.png" width="200"/></td>  
+    <td><img src="assets/8.png" width="200"/></td>  
   </tr>  
-</table>  
-
+</table>
 
 ---
 
-We hope this project impresses the judges and contributes to saving lives through efficient blood donation management. Thank you for your time and consideration!
+## 🧠 AI Components
+
+* **FAISS** for donor-to-bank similarity searches.
+* **LangChain + Gemini** to provide intelligent insights.
+* **Vertex AI** for blood demand prediction.
+
+---
+
+## 🧬 API Integration
+
+We use data from [data.gov.in](https://api.data.gov.in/resource/fced6df9-a360-4e08-8ca0-f283fc74ce15?api-key=579b464db66ec23bdd000001603eb0cc38324dd768735197a75609f5&format=json&limit=2823) to populate and validate blood bank locations and availability.
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a branch: `git checkout -b feature-name`
+3. Make your changes
+4. Submit a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for full details.
+
+---
+
+## 🙏 Acknowledgments
+
+* Google Cloud, Firebase, and the Open Source community
+* Hackathon mentors and reviewers
+* Developers & donors working to save lives ❤️
+
+---
+
+Let’s save lives together, intelligently. 🧠🩸
+**Made with care and code by Team Power Rangers** 💪
